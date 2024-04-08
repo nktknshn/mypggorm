@@ -35,7 +35,7 @@ var commandCreate = &cobra.Command{
 
 		fmt.Println("root connection is ok")
 
-		if err := db.CreateUserAndDatabase(rootConfig, true); err != nil {
+		if err := db.CreateUserAndDatabase(userConfig, true); err != nil {
 			return errors.Wrap(err, "failed to create user and database")
 		}
 

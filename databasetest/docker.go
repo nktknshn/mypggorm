@@ -135,7 +135,7 @@ func (dt *DockerDatabase) RunPostgresDocker() error {
 
 func (dt *DockerDatabase) ConnectDatabaseConfig(config mypggorm.DatabaseConnectionConfig) (*mypggorm.DatabaseConnection, error) {
 	return dt.connectDatabase(pg.Config{
-		DSN: config.SetPort(dt.runningDocker.Container.GetPort("5432/tcp")).DSN(),
+		DSN: config.WithPort(dt.runningDocker.Container.GetPort("5432/tcp")).DSN(),
 	})
 }
 
@@ -144,10 +144,7 @@ func (dt *DockerDatabase) connectDatabase(pgConfig pg.Config) (*mypggorm.Databas
 	var dbCon *gorm.DB
 
 	if err := dt.pool.Retry(func() (err error) {
-		dbCon, err = gorm.Open(
-			pg.New(pgConfig),
-			&gorm.Config{},
-		)
+		dbCon, err = gorm.Open(pg.New(pgConfig), &gorm.Config{})
 		return
 	}); err != nil {
 		return nil, err
@@ -159,8 +156,11 @@ func (dt *DockerDatabase) connectDatabase(pgConfig pg.Config) (*mypggorm.Databas
 func (dt *DockerDatabase) ConnectDatabaseAsRoot(dbName string) (*mypggorm.DatabaseConnection, error) {
 
 	pgConfig := pg.Config{
-		DSN: mypggorm.DefaultDatabaseConnectionConfig.SetDbname(dbName).SetPassword(dt.dockerConfig.DockerPassword).
-			SetPort(dt.runningDocker.Container.GetPort("5432/tcp")).SetUser("postgres").DSN(),
+		DSN: mypggorm.DefaultDatabaseConnectionConfig.
+			WithDbname(dbName).
+			WithPassword(dt.dockerConfig.DockerPassword).
+			WithPort(dt.runningDocker.Container.GetPort("5432/tcp")).
+			WithUser("postgres").DSN(),
 	}
 
 	return dt.connectDatabase(pgConfig)

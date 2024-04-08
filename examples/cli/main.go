@@ -14,9 +14,9 @@ var (
 	flagDBConfig string = "database-config.yaml"
 )
 
-type DatabaseConfig struct{}
+type DatabaseConfigProvider struct{}
 
-func (d *DatabaseConfig) GetUserConfig() (mypggorm.DatabaseConnectionConfig, error) {
+func (d *DatabaseConfigProvider) GetUserConfig() (mypggorm.DatabaseConnectionConfig, error) {
 	r, err := os.Open(flagDBConfig)
 	if err != nil {
 		return mypggorm.DatabaseConnectionConfig{}, errors.Wrap(err, "failed to read config file")
@@ -28,8 +28,7 @@ func (d *DatabaseConfig) GetUserConfig() (mypggorm.DatabaseConnectionConfig, err
 	return cfg, nil
 }
 
-func (d *DatabaseConfig) GetRootConfig() (mypggorm.DatabaseConnectionConfig, error) {
-
+func (d *DatabaseConfigProvider) GetRootConfig() (mypggorm.DatabaseConnectionConfig, error) {
 	pw := os.Getenv("POSTGRES_PASSWORD")
 	if pw == "" {
 		return mypggorm.DatabaseConnectionConfig{}, fmt.Errorf("POSTGRES_PASSWORD is not set")
@@ -38,11 +37,11 @@ func (d *DatabaseConfig) GetRootConfig() (mypggorm.DatabaseConnectionConfig, err
 	if err != nil {
 		return mypggorm.DatabaseConnectionConfig{}, errors.Wrap(err, "failed to get user config")
 	}
-	return cfg.SetPassword(pw).SetDbname("postgres"), nil
+	return cfg.WithPassword(pw).WithDbname("postgres"), nil
 }
 
 func init() {
-	commandDB := dbcli.CreateCommand(&DatabaseConfig{})
+	commandDB := dbcli.DatabaseCommand(&DatabaseConfigProvider{})
 	commandDB.PersistentFlags().StringVarP(&flagDBConfig, "config", "c", flagDBConfig, "database config file")
 	cmd.AddCommand(commandDB)
 }

@@ -165,7 +165,7 @@ func (p *PostgresInstance) CleanDatabase(cfg mypggorm.DatabaseConnectionConfig) 
 func (p *PostgresInstance) ConnectAsRoot(dbname string) (*PostgresInstanceConnection, error) {
 
 	return p.ConnectDatabase(pg.Config{
-		DSN: p.rootConnectionConfig.SetDbname(dbname).DSN(),
+		DSN: p.rootConnectionConfig.WithDbname(dbname).DSN(),
 	})
 }
 

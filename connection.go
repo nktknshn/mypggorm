@@ -99,22 +99,22 @@ func (cfg DatabaseConnectionConfig) DSN() string {
 		" TimeZone=" + cfg.Timezone
 }
 
-func (cfg DatabaseConnectionConfig) SetPort(port string) DatabaseConnectionConfig {
+func (cfg DatabaseConnectionConfig) WithPort(port string) DatabaseConnectionConfig {
 	cfg.Port = port
 	return cfg
 }
 
-func (cfg DatabaseConnectionConfig) SetDbname(dbname string) DatabaseConnectionConfig {
+func (cfg DatabaseConnectionConfig) WithDbname(dbname string) DatabaseConnectionConfig {
 	cfg.Dbname = dbname
 	return cfg
 }
 
-func (cfg DatabaseConnectionConfig) SetPassword(password string) DatabaseConnectionConfig {
+func (cfg DatabaseConnectionConfig) WithPassword(password string) DatabaseConnectionConfig {
 	cfg.Password = password
 	return cfg
 }
 
-func (cfg DatabaseConnectionConfig) SetUser(user string) DatabaseConnectionConfig {
+func (cfg DatabaseConnectionConfig) WithUser(user string) DatabaseConnectionConfig {
 	cfg.User = user
 	return cfg
 }

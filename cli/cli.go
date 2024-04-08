@@ -26,7 +26,7 @@ var (
 	dbConfig DatabaseMethods
 )
 
-func CreateCommand(config DatabaseMethods) *cobra.Command {
+func DatabaseCommand(config DatabaseMethods) *cobra.Command {
 	dbConfig = config
 	return commandDatabase
 }
