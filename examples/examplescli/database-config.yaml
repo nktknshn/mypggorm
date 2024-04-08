@@ -1,0 +1,7 @@
+host: 172.18.0.2
+user: vkre_database
+password: dev-vkre_database
+dbname: vkre_database_new
+port: 5432
+sslmode: disable
+TimeZone: Europe/Moscow
