@@ -66,7 +66,7 @@ func (p *PostgresInstance) CheckRootConnection() error {
 }
 
 func (p *PostgresInstance) CheckConnection(cfg mypggorm.DatabaseConnectionConfig) error {
-	conn, err := p.ConnectDatabase(cfg.ToPostgresConfig())
+	conn, err := p.ConnectDatabase(cfg.PostgresConfig())
 
 	if err != nil {
 		return err

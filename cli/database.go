@@ -25,7 +25,7 @@ func init() {
 
 var commandCreate = &cobra.Command{
 	Use: "create",
-	RunE: runWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
+	RunE: RunWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
 
 		db := postgres.NewPostgresInstance(rootConfig)
 
@@ -51,7 +51,7 @@ var commandCreate = &cobra.Command{
 
 var commandCheck = &cobra.Command{
 	Use: "check",
-	RunE: runWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
+	RunE: RunWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
 
 		db := postgres.NewPostgresInstance(rootConfig)
 
@@ -73,7 +73,7 @@ var commandCheck = &cobra.Command{
 
 var commandDropDatabase = &cobra.Command{
 	Use: "drop",
-	RunE: runWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
+	RunE: RunWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
 
 		fmt.Println("DROPPING database", userConfig.Dbname)
 
@@ -107,7 +107,7 @@ var commandDropDatabase = &cobra.Command{
 var commandRestore = &cobra.Command{
 	Use:  "restore <psql_path> <backup_path>",
 	Args: cobra.ExactArgs(2),
-	RunE: runWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
+	RunE: RunWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
 		psqlPath := args[0]
 		backupPath := args[1]
 
@@ -163,7 +163,7 @@ var commandRestore = &cobra.Command{
 var commandBackup = &cobra.Command{
 	Use:  "backup <pg_dump_path> <backup_path>",
 	Args: cobra.ExactArgs(2),
-	RunE: runWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
+	RunE: RunWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
 
 		pgdumpPath := args[0]
 		backupPath := args[1]
@@ -196,7 +196,7 @@ var commandBackup = &cobra.Command{
 
 var commandReset = &cobra.Command{
 	Use: "reset",
-	RunE: runWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
+	RunE: RunWithConfigs(func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error {
 
 		db := postgres.NewPostgresInstance(rootConfig)
 		if err := db.CheckRootConnection(); err != nil {

@@ -23,11 +23,11 @@ type DatabaseMethods interface {
 }
 
 var (
-	dbConfig DatabaseMethods
+	DbConfig DatabaseMethods
 )
 
 func DatabaseCommand(config DatabaseMethods) *cobra.Command {
-	dbConfig = config
+	DbConfig = config
 	return commandDatabase
 }
 
@@ -53,29 +53,29 @@ func init() {
 func runWithDBConfig(f func(cmd *cobra.Command, dbConfig DatabaseMethods, args []string) error) func(cmd *cobra.Command, args []string) error {
 
 	return func(cmd *cobra.Command, args []string) error {
-		if dbConfig == nil {
+		if DbConfig == nil {
 			return fmt.Errorf("dbConfig is nil")
 		}
 
-		return f(cmd, dbConfig, args)
+		return f(cmd, DbConfig, args)
 	}
 }
 
-func runWithConfigs(f func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error) func(cmd *cobra.Command, args []string) error {
+func RunWithConfigs(f func(cmd *cobra.Command, rootConfig mypggorm.DatabaseConnectionConfig, userConfig mypggorm.DatabaseConnectionConfig, args []string) error) func(cmd *cobra.Command, args []string) error {
 
 	return func(cmd *cobra.Command, args []string) error {
 
-		if dbConfig == nil {
+		if DbConfig == nil {
 			return fmt.Errorf("dbConfig is nil")
 		}
 
-		rootConfig, err := dbConfig.GetRootConfig()
+		rootConfig, err := DbConfig.GetRootConfig()
 
 		if err != nil {
 			return fmt.Errorf("failed to get root config: %w", err)
 		}
 
-		userConfig, err := dbConfig.GetUserConfig()
+		userConfig, err := DbConfig.GetUserConfig()
 
 		if err != nil {
 			return fmt.Errorf("failed to get user config: %w", err)
