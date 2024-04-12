@@ -1,4 +1,4 @@
-package common
+package mypggorm
 
 import (
 	"fmt"
@@ -30,10 +30,14 @@ func (s DatabaseSchema) String() string {
 	return result
 }
 
-func GetSchema(db *gorm.DB) (DatabaseSchema, error) {
+func GetSchemaPublic(db *gorm.DB) (DatabaseSchema, error) {
+	return GetSchema(db, "public")
+}
+
+func GetSchema(db *gorm.DB, tableSchema string) (DatabaseSchema, error) {
 	var schema DatabaseSchema = make(map[string][]ColumnInfo)
 
-	rows, err := db.Raw("SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema='public'").Rows()
+	rows, err := db.Raw("SELECT table_name, column_name, data_type FROM information_schema.columns WHERE table_schema=?", tableSchema).Rows()
 	if err != nil {
 		return nil, err
 	}
