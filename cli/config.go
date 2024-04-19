@@ -8,20 +8,23 @@ import (
 	"github.com/nktknshn/mypggorm"
 )
 
-type DatabaseConfigProvider struct {
-	ConfigFile         func() string
+const RootPasswordEnvKey = "POSTGRES_PASSWORD"
+
+type DatabaseConfigProviderFile struct {
+	ConfigFilePath     func() string
 	RootPasswordEnvKey string
 }
 
-func NewDatabaseConfigProvider(configFile func() string) *DatabaseConfigProvider {
-	return &DatabaseConfigProvider{
-		ConfigFile:         configFile,
-		RootPasswordEnvKey: "POSTGRES_PASSWORD",
+// parses specified config file and returns DatabaseConnectionConfig. Implemenets DatabaseConfigGetter
+func NewDatabaseConfigProviderFile(configFile func() string) *DatabaseConfigProviderFile {
+	return &DatabaseConfigProviderFile{
+		ConfigFilePath:     configFile,
+		RootPasswordEnvKey: RootPasswordEnvKey,
 	}
 }
 
-func (d *DatabaseConfigProvider) GetUserConfig() (mypggorm.DatabaseConnectionConfig, error) {
-	r, err := os.Open(d.ConfigFile())
+func (d *DatabaseConfigProviderFile) GetUserConfig() (mypggorm.DatabaseConnectionConfig, error) {
+	r, err := os.Open(d.ConfigFilePath())
 	if err != nil {
 		return mypggorm.DatabaseConnectionConfig{}, errors.Wrap(err, "failed to read config file")
 	}
@@ -32,10 +35,10 @@ func (d *DatabaseConfigProvider) GetUserConfig() (mypggorm.DatabaseConnectionCon
 	return cfg, nil
 }
 
-func (d *DatabaseConfigProvider) GetRootConfig() (mypggorm.DatabaseConnectionConfig, error) {
+func (d *DatabaseConfigProviderFile) GetRootConfig() (mypggorm.DatabaseConnectionConfig, error) {
 	pw := os.Getenv(d.RootPasswordEnvKey)
 	if pw == "" {
-		return mypggorm.DatabaseConnectionConfig{}, fmt.Errorf("POSTGRES_PASSWORD is not set")
+		return mypggorm.DatabaseConnectionConfig{}, fmt.Errorf("%s is not set", d.RootPasswordEnvKey)
 	}
 	cfg, err := d.GetUserConfig()
 	if err != nil {
